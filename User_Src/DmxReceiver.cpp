@@ -15,6 +15,7 @@ void DmxReceiver::init(DmxFrameCallback frameReceivedCallback) {
     callback = frameReceivedCallback;
     HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
     HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_2);
+    HAL_UART_Receive_DMA(&huart3, DmxReceiver::buffer, DMX_FRAME_SIZE);
 }
 
 void DmxReceiver::signalFrameReceived() {
@@ -29,6 +30,7 @@ bool DmxReceiver::connected() {
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 {
+    /*
     if (htim->Instance==TIM3)
     {
         //Falling
@@ -52,6 +54,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
             }
         }
     }
+     */
 }
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
@@ -61,6 +64,7 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
     {
         //check if we got any data at all before the error occurred. If yes we got a smaller frame which is also fine.
         //If not dmx has been disconnected
+        HAL_UART_Receive_DMA(&huart3, DmxReceiver::buffer, DMX_FRAME_SIZE);
     }
 
 
@@ -70,6 +74,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     if(huart->Instance == USART3)
     {
+        HAL_UART_Receive_DMA(&huart3, DmxReceiver::buffer, DMX_FRAME_SIZE);
         DmxReceiver::signalFrameReceived();
     }
 }

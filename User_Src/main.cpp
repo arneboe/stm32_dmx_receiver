@@ -24,8 +24,7 @@ int main() {
         if(frameReceived)
         {
             frameReceived = false;
-            for(int i = 0; i < 30; ++i) printf("\n");
-            for(int i = 0; i < DMX_FRAME_SIZE; ++i)
+            for(int i = 0; i < 10; ++i)
             {
                 printf("%03d ", dmxBuffer[i]);
             }
